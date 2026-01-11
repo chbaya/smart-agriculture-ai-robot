@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Smart Agriculture Robot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* ====== GLOBAL ====== */
+        * {margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif;}
+        body {background:#eef2f3; color:#333; line-height:1.6;}
+        img {width:100%; max-width:500px; display:block; margin:20px auto; border-radius:10px;}
+        section {background:white; max-width:900px; margin:40px auto; padding:20px; border-radius:10px;}
+        h1, h2 {color:#1e8449; margin-bottom:10px;}
+        
+        /* ====== NAV ====== */
+        nav {
+            background:#2e7d32; display:flex; flex-wrap:wrap; justify-content:center; padding:15px;
+            position: sticky; top:0; z-index:100;
+        }
+        nav a {
+            color:white; text-decoration:none; margin:8px; font-weight:bold; padding:5px 10px;
+        }
+        nav a:hover {background:#145a32; border-radius:5px;}
+        
+        /* ====== SCROLL BEHAVIOR ====== */
+        html {scroll-behavior:smooth;}
+        
+        /* ====== IMAGE TEXT LAYOUT ====== */
+        .image-text {display:flex; gap:20px; align-items:center; margin:40px auto; max-width:900px;}
+        .image-text img {width:300px;}
+        @media (max-width:768px) {.image-text {flex-direction:column; text-align:center;}}
+    </style>
+</head>
+<body>
+
+<!-- ====== NAVIGATION ====== -->
+<nav>
+    <a href="#intro">Introduction</a>
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#system">System</a>
+    <a href="#hardware">Hardware</a>
+    <a href="#ai">AI</a>
+    <a href="#how">How It Works</a>
+    <a href="#results">Results</a>
+    <a href="#code">Code</a>
+</nav>
+
+<!-- ====== INTRODUCTION ====== -->
+<section id="intro">
+    <h1>AI Smart Agriculture Robot</h1>
+    <img src="img/img1/robot.jpg" alt="Robot">
+    <p>
+        This project presents an AI-based robot for smart irrigation
+        and automatic weed detection. It combines Artificial Intelligence,
+        IoT, and Robotics for sustainable farming.
+    </p>
+</section>
+
+<!-- ====== PROBLEM ====== -->
+<section id="problem">
+    <h2>Problem</h2>
+    <img src="img/img1/img2/irrigation.jpg" alt="Overwatering problem">
+    <ul>
+        <li>Over-watering wastes water and damages crops.</li>
+        <li>Under-watering causes plant stress and low yield.</li>
+        <li>Manual weed removal is slow and costly.</li>
+        <li>Excessive herbicide harms crops and soil.</li>
+    </ul>
+</section>
+
+<!-- ====== SOLUTION ====== -->
+<section id="solution">
+    <h2>Solution</h2>
+    <img src="img/img1/img2/weeds.jpg" alt="Weed detection">
+    <p>
+        The robot waters plants only when needed and removes weeds automatically
+        using AI vision. Data is sent to a dashboard via IoT.
+    </p>
+</section>
+
+<!-- ====== SYSTEM ====== -->
+<section id="system">
+    <h2>System Architecture</h2>
+    <img src="img/img1/img2/img3/system.jpg" alt="System architecture">
+    <pre>
+ESP32-CAM → Raspberry Pi (YOLO AI)
+                    ↓
+             Arduino / ESP32
+                    ↓
+         Motors – Pump – Spray Valve
+    </pre>
+</section>
+
+<!-- ====== HARDWARE ====== -->
+<section id="hardware">
+    <h2>Hardware</h2>
+    <img src="img/img1/banner.jpg" alt="Hardware">
+    <ul>
+        <li>ESP32-CAM</li>
+        <li>Raspberry Pi 4</li>
+        <li>Arduino Mega</li>
+        <li>Soil Moisture Sensors</li>
+        <li>DHT22 Temperature & Humidity Sensor</li>
+        <li>Ultrasonic Sensors</li>
+        <li>GPS Module</li>
+        <li>Water Pump & Spray System</li>
+    </ul>
+</section>
+
+<!-- ====== AI ====== -->
+<section id="ai">
+    <h2>Artificial Intelligence</h2>
+    <img src="img/img1/img2/img3/ai.jpg" alt="AI Detection">
+    <p>
+        YOLO and OpenCV run on Raspberry Pi for real-time weed detection.
+        When a weed is detected, the Arduino activates the spraying mechanism.
+    </p>
+</section>
+
+<!-- ====== HOW IT WORKS ====== -->
+<section id="how">
+    <h2>How It Works</h2>
+    <p>
+        1. Robot moves along crop rows.<br>
+        2. Sensors read soil and environmental conditions.<br>
+        3. ESP32-CAM captures images.<br>
+        4. Raspberry Pi AI detects weeds.<br>
+        5. Arduino controls irrigation and spraying.<br>
+        6. IoT dashboard shows live data.
+    </p>
+</section>
+
+<!-- ====== RESULTS ====== -->
+<section id="results">
+    <h2>Results & Benefits</h2>
+    <ul>
+        <li>💧 Saves water</li>
+        <li>🌱 Improves crop health</li>
+        <li>☠ Reduces herbicide usage</li>
+        <li>🤖 Fully automated system</li>
+        <li>🌍 Environmentally friendly</li>
+    </ul>
+</section>
+
+<!-- ====== CODE ====== -->
+<section class="code">
+  <h2>Source Code</h2>
+
+  <div class="code-box">
+    <h3>AI Weed Detection (Python)</h3>
+    <a href="codes/ai_detection.py" download>Download ai_detection.py</a>
+  </div>
+
+  <div class="code-box">
+    <h3>ESP32-CAM Code</h3>
+    <a href="codes/esp32_cam.ino" download>Download esp32_cam.ino</a>
+  </div>
+
+  <div class="code-box">
+    <h3>IoT Dashboard Server</h3>
+    <a href="codes/server_dashboard.py" download>Download server_dashboard.py</a>
+  </div>
+</section>
+</body>
+</html>
