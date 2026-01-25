@@ -1,69 +1,112 @@
-#include "esp_camera.h"
 #include <WiFi.h>
+#include <HTTPClient.h>
+#include <DHT.h>
 
-// ===================
-// CAMERA MODEL
-// ===================
-#define CAMERA_MODEL_AI_THINKER
-#include "camera_pins.h"
-
-// ===================
-// WIFI CREDENTIALS
-// ===================
+// ================== WIFI ==================
 const char* ssid = "YOUR_WIFI_NAME";
 const char* password = "YOUR_WIFI_PASSWORD";
 
-void startCameraServer();
+// ================== SENSORS ==================
+#define SOIL_PIN 34
+#define DHT_PIN 4
+#define DHTTYPE DHT22
+DHT dht(DHT_PIN, DHTTYPE);
 
+// ================== ACTUATORS ==================
+#define PUMP_PIN 26
+#define SPRAY_PIN 27
+#define BUZZER 25
+
+// ================== FUTURE GPS (READY) ==================
+// GPS module will be added in future
+float latitude = 0.0;
+float longitude = 0.0;
+
+// ================== DATA ==================
+int soilValue;
+float temperature;
+float humidity;
+
+// ================== SETUP ==================
 void setup() {
   Serial.begin(115200);
-  Serial.setDebugOutput(true);
 
-  camera_config_t config;
-  config.ledc_channel = LEDC_CHANNEL_0;
-  config.ledc_timer = LEDC_TIMER_0;
-  config.pin_d0 = Y2_GPIO_NUM;
-  config.pin_d1 = Y3_GPIO_NUM;
-  config.pin_d2 = Y4_GPIO_NUM;
-  config.pin_d3 = Y5_GPIO_NUM;
-  config.pin_d4 = Y6_GPIO_NUM;
-  config.pin_d5 = Y7_GPIO_NUM;
-  config.pin_d6 = Y8_GPIO_NUM;
-  config.pin_d7 = Y9_GPIO_NUM;
-  config.pin_xclk = XCLK_GPIO_NUM;
-  config.pin_pclk = PCLK_GPIO_NUM;
-  config.pin_vsync = VSYNC_GPIO_NUM;
-  config.pin_href = HREF_GPIO_NUM;
-  config.pin_sccb_sda = SIOD_GPIO_NUM;
-  config.pin_sccb_scl = SIOC_GPIO_NUM;
-  config.pin_pwdn = PWDN_GPIO_NUM;
-  config.pin_reset = RESET_GPIO_NUM;
-  config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;
+  pinMode(PUMP_PIN, OUTPUT);
+  pinMode(SPRAY_PIN, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
 
-  config.frame_size = FRAMESIZE_QVGA;
-  config.jpeg_quality = 10;
-  config.fb_count = 2;
+  dht.begin();
 
-  if (esp_camera_init(&config) != ESP_OK) {
-    Serial.println("Camera init failed");
-    return;
-  }
+  digitalWrite(PUMP_PIN, LOW);
+  digitalWrite(SPRAY_PIN, LOW);
 
+  // WiFi connection
   WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-
-  Serial.println("\nWiFi connected");
-  Serial.print("Camera Stream URL: http://");
-  Serial.println(WiFi.localIP());
-
-  startCameraServer();
+  Serial.println("\nWiFi Connected!");
 }
 
+// ================== LOOP ==================
 void loop() {
-  delay(10000);
+  readSensors();
+  smartIrrigation();
+  sendDataToFarmer();
+
+  delay(5000); // every 5 seconds
 }
 
+// ================== FUNCTIONS ==================
+void readSensors() {
+  soilValue = analogRead(SOIL_PIN);
+  temperature = dht.readTemperature();
+  humidity = dht.readHumidity();
+
+  Serial.println("---- SENSOR DATA ----");
+  Serial.print("Soil Moisture: ");
+  Serial.println(soilValue);
+  Serial.print("Temperature: ");
+  Serial.println(temperature);
+  Serial.print("Humidity: ");
+  Serial.println(humidity);
+}
+
+void smartIrrigation() {
+  if (soilValue > 2500) {  // DRY SOIL
+    digitalWrite(PUMP_PIN, HIGH);
+    Serial.println("Irrigation ON");
+  } else {
+    digitalWrite(PUMP_PIN, LOW);
+    Serial.println("Irrigation OFF");
+  }
+}
+
+// ================== SEND DATA ==================
+void sendDataToFarmer() {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+
+    // Example API (later your app / Firebase)
+    http.begin("https://example.com/api/robot-data");
+
+    http.addHeader("Content-Type", "application/json");
+
+    String payload = "{";
+    payload += "\"soil\":" + String(soilValue) + ",";
+    payload += "\"temperature\":" + String(temperature) + ",";
+    payload += "\"humidity\":" + String(humidity) + ",";
+    payload += "\"lat\":" + String(latitude) + ",";
+    payload += "\"lng\":" + String(longitude);
+    payload += "}";
+
+    int httpResponseCode = http.POST(payload);
+
+    Serial.print("Data sent, response: ");
+    Serial.println(httpResponseCode);
+
+    http.end();
+  }
+}
